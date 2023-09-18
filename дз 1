@@ -1,0 +1,27 @@
+x = -r; y = 0;
+
+F = 1-r;
+delta_Fs = 3;
+delta_Fd = 5-2*r;
+
+while( x + y < 0 )
+{
+      plot8( x, y );
+
+      if( F > 0 )
+      {
+            // d: Диагональное смещение
+            F += delta_Fd;
+            x++; y++;
+            delta_Fs += 2;
+            delta_Fd += 4;
+      }
+      else
+      {
+            // s: Вертикальное смещение
+            F += delta_Fs;
+            y++;
+            delta_Fs += 2;
+            delta_Fd += 2;
+      }
+}
