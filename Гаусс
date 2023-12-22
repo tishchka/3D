@@ -1,0 +1,35 @@
+import numpy as np
+from scipy.signal import convolve2d
+import matplotlib.pyplot as plt
+from PIL import Image
+
+def gaussian_filter(image, sigma):
+    # Генерация ядра Гаусса
+    kernel_size = int(6 * sigma + 1)
+    if kernel_size % 2 == 0:
+        kernel_size += 1
+
+    kernel = np.fromfunction(
+        lambda x, y: (1/(2*np.pi*sigma**2)) * np.exp(-((x - (kernel_size-1)//2)**2 + (y - (kernel_size-1)//2)**2) / (2*sigma**2)),
+        (kernel_size, kernel_size)
+    )
+
+    kernel /= np.sum(kernel)  # Нормализация ядра
+
+    # Применение фильтра
+    result = convolve2d(image, kernel, mode='same', boundary='symm')
+
+    return result
+
+# Загрузка изображения и преобразование в оттенки серого
+image_path = 'your_image.jpg'
+image = np.array(Image.open(image_path).convert('L'))
+
+# Применение фильтра Гаусса
+sigma = 1.5
+result = gaussian_filter(image, sigma)
+
+# Отображение результатов
+plt.imshow(result, cmap='gray')
+plt.title('Gaussian Filter')
+plt.show()
