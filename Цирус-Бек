@@ -1,0 +1,37 @@
+def clip_cyrus_beck(x1, y1, x2, y2, xmin, ymin, xmax, ymax):
+    # Вычисление параметров p1 и p2
+    p1 = [-(x2 - x1), x2 - x1, -(y2 - y1), y2 - y1]
+    p2 = [xmin - x1, xmax - x1, ymin - y1, ymax - y1]
+
+    t_entry = 0.0
+    t_exit = 1.0
+
+    for i in range(4):
+        if p1[i] == 0:  # Отрезок параллелен отсекающей границе
+            if p2[i] < 0:
+                return None  # Отрезок полностью снаружи
+        else:
+            t = p2[i] / p1[i]
+            if p1[i] < 0 and t > t_entry:
+                t_entry = t
+            elif p1[i] > 0 and t < t_exit:
+                t_exit = t
+
+    if t_entry > t_exit:
+        return None  # Отрезок полностью снаружи
+
+    clipped_x1 = x1 + t_entry * (x2 - x1)
+    clipped_y1 = y1 + t_entry * (y2 - y1)
+    clipped_x2 = x1 + t_exit * (x2 - x1)
+    clipped_y2 = y1 + t_exit * (y2 - y1)
+
+    return clipped_x1, clipped_y1, clipped_x2, clipped_y2
+
+# Пример использования
+x1, y1 = 20, 40
+x2, y2 = 80, 90
+xmin, ymin = 30, 50
+xmax, ymax = 70, 80
+
+clipped_result = clip_cyrus_beck(x1, y1, x2, y2, xmin, ymin, xmax, ymax)
+print("Clipped Result:", clipped_result)
