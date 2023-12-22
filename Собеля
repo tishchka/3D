@@ -1,0 +1,30 @@
+import numpy as np
+from scipy.signal import convolve2d
+import matplotlib.pyplot as plt
+from PIL import Image
+
+def sobel_filter(image):
+    # Операторы Собеля для вычисления производных по x и y
+    sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    sobel_y = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+
+    # Вычисление градиентов по x и y
+    gradient_x = convolve2d(image, sobel_x, mode='same', boundary='symm')
+    gradient_y = convolve2d(image, sobel_y, mode='same', boundary='symm')
+
+    # Вычисление градиента по магнитуде
+    gradient_magnitude = np.sqrt(gradient_x**2 + gradient_y**2)
+
+    return gradient_magnitude
+
+# Загрузка изображения и преобразование в оттенки серого
+image_path = 'your_image.jpg'
+image = np.array(Image.open(image_path).convert('L'))
+
+# Применение фильтра Собеля
+result = sobel_filter(image)
+
+# Отображение результатов
+plt.imshow(result, cmap='gray')
+plt.title('Sobel Filter')
+plt.show()
