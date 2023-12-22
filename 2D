@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+
+def create_figure(points):
+    return plt.Polygon(points, closed=True, fill=None, edgecolor='b')
+
+def transform_figure(figure, operation, value):
+    x, y = zip(*figure.xy)
+
+    if operation == 'translate_x':
+        x = [coord + value for coord in x]
+    elif operation == 'translate_y':
+        y = [coord + value for coord in y]
+    elif operation == 'scale':
+        x = [coord * value for coord in x]
+        y = [coord * value for coord in y]
+    elif operation == 'rotate':
+        angle_rad = np.radians(value)
+        x, y = np.dot(np.array([[np.cos(angle_rad), -np.sin(angle_rad)],
+                                [np.sin(angle_rad), np.cos(angle_rad)]]), np.array([x, y]))
+
+    return create_figure(list(zip(x, y)))
+
+# Пример использования
+points = [(1, 1), (2, 1), (2, 2), (1, 2)]
+
+original_figure = create_figure(points)
+plt.gca().add_patch(original_figure)
+plt.axis('equal')
+plt.title('Original Figure')
+
+# Преобразование: перемещение по оси x
+translated_figure = transform_figure(original_figure, 'translate_x', 2)
+plt.gca().add_patch(translated_figure)
+plt.title('Translated Figure')
+
+# Преобразование: масштабирование
+scaled_figure = transform_figure(original_figure, 'scale', 1.5)
+plt.gca().add_patch(scaled_figure)
+plt.title('Scaled Figure')
+
+# Преобразование: поворот
+rotated_figure = transform_figure(original_figure, 'rotate', 45)
+plt.gca().add_patch(rotated_figure)
+plt.title('Rotated Figure')
+
+plt.show()
