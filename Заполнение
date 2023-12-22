@@ -1,0 +1,27 @@
+import matplotlib.pyplot as plt
+
+def boundary_fill(img, x, y, fill_color, boundary_color):
+    if img[x, y] != boundary_color and img[x, y] != fill_color:
+        img[x, y] = fill_color
+        boundary_fill(img, x + 1, y, fill_color, boundary_color)
+        boundary_fill(img, x - 1, y, fill_color, boundary_color)
+        boundary_fill(img, x, y + 1, fill_color, boundary_color)
+        boundary_fill(img, x, y - 1, fill_color, boundary_color)
+
+# Создание изображения (матрицы) с границей
+width, height = 10, 10
+image = -1 * np.ones((width, height))  # Используем -1 для обозначения неинициализированных пикселей
+image[1:-1, 1:-1] = 0  # Задаем внутреннюю область
+
+# Задаем координаты начальной точки и цвета для заливки
+start_x, start_y = 5, 5
+fill_color = 2  # Произвольный цвет
+boundary_color = 0  # Цвет границы
+
+# Применение метода граничных точек
+boundary_fill(image, start_x, start_y, fill_color, boundary_color)
+
+# Отображение результата
+plt.imshow(image, cmap='viridis', interpolation='nearest')
+plt.title('Boundary Fill')
+plt.show()
