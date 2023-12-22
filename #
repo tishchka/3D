@@ -1,8 +1,7 @@
-def draw_line(x1=0, y1=0, x2=0, y2=0, output_file='output.txt'):
+def draw_line(x1=0, y1=0, x2=0, y2=0, filename='output.txt'):
 
-    def set_pixel(x, y):
-        with open(output_file, 'a') as file:
-            file.write(f'{x}, {y} #\n')
+    def set_pixel(x, y, line):
+        line[y][x] = '#'
 
     dx = x2 - x1
     dy = y2 - y1
@@ -24,9 +23,12 @@ def draw_line(x1=0, y1=0, x2=0, y2=0, output_file='output.txt'):
 
     x, y = x1, y1
 
-    error, t = el/2, 0
+    error, t = el / 2, 0
 
-    set_pixel(x, y)
+    # Инициализация массива для хранения отрезка
+    line = [[' ' for _ in range(max(x1, x2) + 1)] for _ in range(max(y1, y2) + 1)]
+
+    set_pixel(x, y, line)
 
     while t < el:
         error -= es
@@ -38,8 +40,12 @@ def draw_line(x1=0, y1=0, x2=0, y2=0, output_file='output.txt'):
             x += pdx
             y += pdy
         t += 1
-        set_pixel(x, y)
+        set_pixel(x, y, line)
 
-# Использование функции и сохранение в файл
-output_file = 'output.txt'
-draw_line(0, 0, 5, 15, output_file)
+    
+    with open(filename, 'w') as file:
+        for row in reversed(line):
+            file.write(''.join(row) + '\n')
+
+# Пример использования
+draw_line(0, 0, 5, 15, 'output.txt')
